@@ -1,0 +1,47 @@
+{% extends 'common/project_home.html' %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+  <div >
+    <h1 class="display-4">My Cart</h1>
+
+<table class="table table-primary"  style="width: 1000px;" align="center" >
+    <thead>
+      <tr>
+        <th scope="col">slno</th>
+        <th scope="col">Image</th>
+        <th scope="col">Product name</th>
+        <th scope="col">Price</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for items in cart_items %}
+      <tr>
+        <th scope="row">1</th>
+        <td><img src="{{items.product.p_image.url}}" alt="" style="width: 150px; height:100px;"></td>
+        <td>{{items.product.p_name}}</td>
+        <td><h6>{{items.product.p_price}}</h6></td>
+        <td>
+            <div class="card-body">
+                <a href="{% url 'customer:productdetails' items.product.id %}" class="btn btn-primary">Buy Now</a>
+                <a href="{% url 'customer:remove_item' items.product.id %}" class="btn btn-danger"> Cancel</a>
+              </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div> 
+
+{% endblock %}
+    
+</body>
+</html>

@@ -1,0 +1,170 @@
+ 
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/addproduct.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{% static 'css/style1.css' %}">
+    <script src="https://code.jquery.com/jquery-3.6.0.js"
+        integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <title>Approve seller</title>
+</head>
+<style>
+    img{
+        width: 150px; height:100px;
+    }
+</style>
+<body  id="b" onload="load_seller()">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+        <div class="container-fluid">
+          <!-- <a class="navbar-brand" href="#">Shop Now</a> -->
+          <h1 class="display-6" style="color: white;">Shop Now</h1>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{% url 'ecomm_admin:home' %}">Home</a>
+              </li>
+               <li class="nav-item">
+                
+                <a class="nav-link active" href="{% url 'ecomm_admin:viewseller' %}">view seller</a>
+                
+                
+                
+              </li>
+              
+              <li class="nav-item">
+                <a class="nav-link active" href="{% url 'ecomm_admin:viewcustomer' %}">view customer</a>
+
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active" href="{% url 'ecomm_admin:approveseller' %}">Approve seller</a>
+                
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active" href="{% url 'common:home' %}">logout </a>
+                
+              </li>
+            </ul>
+            
+            <form class="d-flex" role="search">
+              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+              <button class="btn btn-success" type="submit">Search</button>
+            </form>
+          </div>
+        </div>
+    </nav>
+    <br>
+   
+    
+    <form action="" method="POST">
+        {% csrf_token %}
+        <table class="table table-primary" id="seller_table"  style="width: 800px;" align="center" >
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>NAME</th>
+                    <th>ADDRESS</th>
+                    <th>EMAIL</th>
+                    <th>PHONE NO</th>
+                    <th>IMAGE</th>
+                    <th>ACTION</th>
+                    <th>ACTION</th>
+                  </tr>
+    
+            </thead>
+                
+                
+        </table>
+
+    </form>
+    
+    <script>
+       function fun(){
+        alert('haii')
+       }
+        function load_seller(){
+            
+            $.ajaxSetup({
+                headers: {
+                    "X-CSRFToken": $('[name=csrfmiddlewaretoken]').val()
+                }
+            })
+            $.ajax({
+                url: 'http://127.0.0.1:8000/ecomm_admin/load_seller',
+                method: 'POST',
+                success: function (response) {
+                    console.log(response.data.length)
+                    data = response.data
+                    console.log(data)
+                    for (var i = 0; i < data.length; i++) {
+
+                        $('#seller_table').append("<tr class='tr' id=row" + data[i].id + "><td class='row-data' id=std" + data[i].id + ">" + data[i].id + "</td><td class='row-data'>"
+                            + data[i].name + "</td><td class='row-data'>" + data[i].address + "</td><td class='row-data'>" + data[i].email + "</td><td class='row-data'>" + data[i].phone +
+                            "</td><td class='row-data'> <img src=" + data[i].image +
+                            "></td><td><button type='button' class='btn btn-danger' onclick=approvels(" + data[i].id + ")>Approve</button> </td><td><button type='button' class='btn btn-danger' onclick=del_seller(" + data[i].id + ")>Delete</button> </td></tr>")
+                    }
+
+                }
+
+            })
+        }
+
+        function del_seller(id) {
+            console.log(id)
+            $.ajax({
+                url: 'del_seller',
+                method: 'POST',
+                data: {
+
+                    'id': id,
+
+                },
+                success: function (response) {
+                    console.log(response.status)
+                    data = response.data
+                    $('.tr').empty()
+                    load_seller()
+
+                }
+            })
+        }
+
+        function approvels(id) {
+            console.log(id)
+            $.ajax({
+                url: 'approvels',
+                method: 'POST',
+                data: {
+
+                    'id': id,
+
+                },
+                success: function (response) {
+                    console.log(response.status)
+                    data = response.data
+                    $('.tr').empty()
+                    load_seller()
+
+                }
+            })
+        }
+
+    
+
+        
+    </script>
+
+    
+    
+    
+</body>
+</html>

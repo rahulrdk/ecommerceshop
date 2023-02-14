@@ -1,0 +1,43 @@
+{% extends 'seller/seller_home.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/addproduct.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+    <title>Document</title>
+</head>
+<body>
+    {% block content %}
+
+    <div align="center">
+        <div class="password">
+            <h1>STOCK UPDATE</h1>
+            <div class="box1">
+                <label for="">SELECT PRODUCT ID</label>
+                <select name="cars" id="cars" palceholder="select">
+                    <option value=""></option>
+                    <option value=""></option>
+                    <option value=""></option>
+                    <option value=""></option>
+                  </select>
+            </div>
+            <div class="box1">
+                <label for="">CURRENT STOCK</label>
+                <input type="text" name="" id="" readonly>
+            </div>
+            <div class="box1">
+                <label for="">UPDATE STOCK</label>
+                <input type="text" name="" id="">
+            </div>
+        </div>
+        <button type="button" class="btn btn-success">Success</button>
+    </div>
+    {% endblock %}
+
+</body>
+</html>

@@ -1,0 +1,20 @@
+.addproduct {
+    background: rgb(197, 248, 68);
+    margin: 10px;
+    padding: 0 7px 0 7px;
+    width: 500px;
+    border-radius: 10px;
+}
+
+.box1 {
+    display: block;
+    padding: 10px;
+    margin-bottom: 30px;
+    text-align: justify;
+}
+
+label {
+    display: inline-block;
+    width: 150px;
+    /* text-align: right; */
+}

@@ -1,0 +1,203 @@
+{% extends 'common/project_home.html' %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
+    crossorigin="anonymous"></script>
+</head>
+
+<body>
+
+  <form action="" method="POST">
+    {% csrf_token %}
+    <div class="card position-absolute top-50 start-50 translate-middle"
+      style="width: 50%rem;background-color: antiquewhite;">
+      <img src="{{product.p_image.url}}" class="card-img-top" alt="...">
+      <div class="card-body">
+        <h5 class="card-title">{{product.p_name}}</h5>
+        <p class="card-text">{{product.p_description}}</p>
+        <input type="hidden" value="{{product.id}}" id="productid">
+
+      </div>
+      <p>Price </p>
+      <p><input type="text" value="{{product.p_price}}" readonly name="" id="p_price"></p>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">
+          <div class="row mb-3">
+            <label for="inputEmail3" class="col-sm-2 col-form-label">Quantity</label>
+            <div class="col-sm-10">
+              <select class="form-select" id="qty" style="width: 100px;">
+                <option selected>Choose...</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+              </select>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="exampleFormControlTextarea1" class="form-label">Shipping Address</label>
+            <textarea class="form-control" id="address" rows="3"></textarea>
+          </div>
+          <div class="row mb-3">
+            <label for="inputEmail3" class="col-sm-2 col-form-label">Total</label>
+            <div class="col-sm-10">
+              <input class="form-control" type="text" id="total_input" value="" aria-label="readonly input example"
+                style="width: 150px;" readonly>
+            </div>
+          </div>
+
+
+        </li>
+        <!-- <li class="list-group-item">A second item</li>
+      <li class="list-group-item">A third item</li> -->
+      </ul>
+      <div class="card-body">
+        <button type="button" class="btn btn-warning" onclick="pay()">Checkout</button>
+        <a href="#" class="btn btn-danger"> Cancel</a>
+      </div>
+    </div>
+
+  </form>
+  <script>
+    $(document).ready(function () {
+
+      $.ajaxSetup({
+        headers: {
+          "X-CSRFToken": $('[name=csrfmiddlewaretoken]').val()
+        }
+      })
+
+      $('#qty').change(function () {
+
+        var price = document.getElementById('p_price').value
+        var qty = document.getElementById('qty').value
+        $.ajax({
+
+
+          url: 'http://127.0.0.1:8000/customer/find_total',
+          data: {
+            'qty': qty,
+            'price': price
+          },
+          method: 'POST',
+          success: function (response) {
+
+            document.getElementById('total_input').value = response.total
+          }
+
+        })
+      })
+
+
+    })
+
+  </script>
+
+
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script>
+    function pay() {
+      amount = $("#total_input").val()
+      address = $("#address").val()
+      product = $("#productid").val()
+
+
+      console.log('amount is', amount);
+      $.ajaxSetup({
+        headers: {
+          "X-CSRFToken": $('[name=csrfmiddlewaretoken]').val()
+        }
+      })
+      $.ajax({
+        url: '',
+        type: 'POST',
+        data: {
+          total: amount * 100,
+          address: address,
+
+          product: product
+
+
+        },
+        success: function (response) {
+          console.log("payment_id = " + response.id);
+          console.log(response.amount)
+          console.log((parseInt(amount)).toString(), 'lkdeldj')
+          var options = {
+            "key": "rzp_test_jznmHCFBf6ZMUd", // Enter the Key ID generated from the Dashboard
+            "amount": (parseInt(amount) * 100).toString(), // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+            "currency": "INR",
+            "name": "Cybersquare",
+            "description": "Place order",
+            "image": "https://cs-ecom.herokuapp.com/static/images/cs_ecom_logo.png",
+            "id": "1234",
+            "order_id": response.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+            "handler": function (response) {
+              console.log(response.razorpay_payment_id);
+              console.log(response.razorpay_order_id);
+              console.log(response.razorpay_signature)
+
+              order_datails(response.razorpay_payment_id)
+
+
+
+
+            },
+            "theme": {
+              "color": "#3399cc"
+            }
+          };
+          var rzp1 = new Razorpay(options);
+          rzp1.on('payment.failed', function (response) {
+            alert(response.error.code);
+            alert(response.error.description);
+            alert(response.error.source);
+            alert(response.error.step);
+            alert(response.error.reason);
+            // alert(response.error.metadata.order_id);
+            alert(response.error.metadata.payment_id);
+          });
+          rzp1.open();
+        }
+      })
+    }
+
+    function order_datails(payment_id) {
+      amount = $("#total_input").val()
+      address = $("#address").val()
+      product = $("#productid").val()
+      $.ajaxSetup({
+        headers: {
+          "X-CSRFToken": $('[name=csrfmiddlewaretoken]').val()
+        }
+      })
+      $.ajax({
+        url: 'http://127.0.0.1:8000/customer/order_product',
+        type: 'POST',
+        data: {
+          product:product,
+          payment_id:payment_id,
+          address:address,
+          amount:amount
+
+        }
+
+      })
+
+
+
+    }
+
+
+  </script>
+
+  {% endblock %}
+</body>
+
+</html>
